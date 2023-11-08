@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+}
+
+table {
+    margin: 100px auto;
+}
+
+tfoot td{
+    padding: 10px;
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.marked-mine {
+    background-color: #620b0b94;
+}
+
+.marked-not-mine {
+    background-color: #74656594;
+}
