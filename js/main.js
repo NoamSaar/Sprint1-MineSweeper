@@ -2,6 +2,11 @@
 
 const MINE = '💣'
 const MARK = '🚩'
+const WIN_S = '😎'
+const MINE_S = '🤯'
+const LOOSE_S = '🫠'
+const NORNAL_S = '😄'
+const RIGHT_S = '🥳'
 
 var gBoard = []
 
@@ -11,25 +16,43 @@ const gGame = {
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
+    minesStricks: 0,
 }
 
 const gLevel = {
     SIZE: 4,
-    MINES: 2
+    MINES: 2,
+    LIVES: 2,
 }
+
+var gClickedMinesCount = gLevel.LIVES
 
 function onInit() {
     modalDisplay('add')
+    restoreLivesDisplay()
+    changeSmiley(NORNAL_S)
 
     gGame.isOn = true
     gGame.markedCount = 0
     gGame.shownCount = 0
+    gGame.secsPassed = 0
+    gGame.minesStricks = 0
+    gClickedMinesCount = gLevel.LIVES
 
-    gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE)
-    // console.log('gBoard:', gBoard)
-    renderBoard(gBoard)
+    gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE)       // Model
+    renderBoard(gBoard)                                 // DOM
 
     setMinesNegsCount(gBoard)
+}
+
+
+function addFirstClickEventListener() {
+    const elBoard = document.querySelector('.board')
+    elBoard.addEventListener('click', onFirstClick, { once: true })
+}
+
+function onFirstClick() {
+
 }
 
 // create board 
@@ -44,7 +67,6 @@ function buildBoard(rows, cols) {
                 isMine: false,
                 isMarked: false,
             }
-
             board[i][j] = cell
         }
     }
@@ -84,6 +106,7 @@ function renderBoard(board) {
             const title = `cell: ${i}, ${j}`
 
             strHTML += `\t<td class="cell ${cellClass}" title="${title}" 
+            data-i="${i}" data-j="${j}"
             onclick="onCellClicked(this, ${i}, ${j})"
             oncontextmenu="onCellMarked(this, ${i}, ${j})">`
 
@@ -130,16 +153,37 @@ function onCellClicked(elCell, i, j) {
     if (currCell.isShown) return
 
     if (currCell.isMine) {
+        changeSmiley(MINE_S)
+        if (gGame.minesStricks < gLevel.LIVES) {
+            gGame.minesStricks++
+            gGame.shownCount++
+        }
+
         currCell.isShown = true                     // Model
         gGame.isVictory = false                     // Model
 
         elCell.classList.add('marked-mine')         // DOM
         elCell.innerHTML = MINE                     // DOM
-        gameOver()
+        
+        gClickedMinesCount--                      
+        const elMinsCount = document.querySelector('.mines-count')  
+        elMinsCount.innerHTML = gClickedMinesCount
+        
+        if (gClickedMinesCount === 0) {
+            const elLivesSpan = document.querySelector('.lives')
+            elLivesSpan.classList.add('hidden')
+            gameOver()
+        }
 
     } else {
+        changeSmiley(RIGHT_S)
+        setTimeout(() => {
+            changeSmiley(NORNAL_S)
+        }, 1500)
+
         if (clearFromNegMines(gBoard, i, j)) {
             expandShown(gBoard, elCell, i, j)
+
         } else {
             currCell.isShown = true                     // Model
             gGame.shownCount++                          // Model
@@ -166,7 +210,7 @@ function expandShown(board, elCell, rowIdx, colIdx) {
             var currCell = board[i][j]
             const elNegCell = document.querySelector(`.cell-${i}-${j}`)
 
-            if (currCell) {
+            if (currCell && !currCell.isShown) {
                 currCell.isShown = true                     // Model
                 gGame.shownCount++                          // Model
     
@@ -175,7 +219,7 @@ function expandShown(board, elCell, rowIdx, colIdx) {
             }
         }
     }
-    console.log(gGame)
+    // console.log(gGame)
 }
 
 // checks if a cell is clear from neg mines -- used in onCellClicked
@@ -218,7 +262,7 @@ function onCellMarked(elCell, i, j) {
 }
 
 function checkGameOver() {
-    const allMinesMarked = gGame.markedCount === gLevel.MINES
+    const allMinesMarked = gGame.markedCount + gGame.minesStricks === gLevel.MINES
     const allNonMinesShown = gGame.shownCount === gLevel.SIZE ** 2 - gGame.markedCount
     // console.log('allMinesMarked:', allMinesMarked)
     // console.log('allNonMinesShown:', allNonMinesShown)
@@ -233,6 +277,12 @@ function checkGameOver() {
 
 function gameOver() {
     gGame.isOn = false
+
+    if (!gGame.isVictory) {
+        changeSmiley(LOOSE_S)
+    } else {
+        changeSmiley(WIN_S)
+    }
 
     modalDisplay('remove')
 }
@@ -263,7 +313,7 @@ function modalDisplay(action) {
     const h2 = elModal.querySelector('h2')
 
     if (gGame.isVictory) {
-        h2.innerHTML = 'You Won!'
+        h2.innerHTML = 'You Won! 👻'
     } else {
         h2.innerHTML = 'You Lost 🙁'
     }
@@ -273,4 +323,16 @@ function modalDisplay(action) {
     } else (
         elModal.classList.remove('hidden')
     )
+}
+
+function restoreLivesDisplay() {
+    const elLivesSpan = document.querySelector('.lives')
+    elLivesSpan.classList.remove('hidden')
+    const elMinsCount = document.querySelector('.mines-count')  
+    elMinsCount.innerHTML = gLevel.LIVES
+}
+
+function changeSmiley(EMOJI) {
+    const elSmiley = document.querySelector('.smiley')
+    elSmiley.innerHTML = EMOJI
 }

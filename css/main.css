@@ -48,6 +48,12 @@ button {
     /* border-radius: 10px; */
 }
 
+.smiley {
+    font-size: 4em;
+    background-color: transparent;
+    border: none;
+}
+
 .hidden {
     display: none;
 }
