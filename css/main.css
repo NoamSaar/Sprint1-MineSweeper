@@ -10,7 +10,7 @@ table {
     margin: 100px auto;
 }
 
-tfoot td{
+tfoot td {
     padding: 10px;
 }
 
@@ -21,10 +21,33 @@ tfoot td{
     cursor: pointer;
 }
 
+
 .marked-mine {
     background-color: #620b0b94;
 }
 
 .marked-not-mine {
     background-color: #74656594;
+}
+
+.modal {
+    padding: 5px;
+    width: 300px;
+    border: 2px solid Black;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+button {
+    padding: 5px;
+    margin: 10px;
+    cursor: pointer;
+    /* border-radius: 10px; */
+}
+
+.hidden {
+    display: none;
 }

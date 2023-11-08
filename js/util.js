@@ -1,5 +1,10 @@
 'use strict'
 
+// // Prevent the context menu from appearing
+window.addEventListener('contextmenu', function (e) {
+    e.preventDefault() 
+})
+
 // getRamdomInt
 function getRandomInt(min, max) {
     min = Math.ceil(min);
