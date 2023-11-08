@@ -10,10 +10,22 @@
   <body onload="onInit()">
     <h1>Mine Sweeper</h1>
 
-    <h2 class="lives">Lives Left: <span class="mines-count">2</span></h2>
+    <h2 class="lives">Lives Left: <span class="mines-count">2</span> | Hints: 
+      <span class="hints1">💡</span>
+      <span class="hints2">💡</span>
+      <span class="hints3">💡</span>
+    </h2>
+    
+    <h2>Timer: <span class="timer">000</span></h2>
 
-    <button class="smiley" onclick="onInit()"></button>
+    <div>
+      <button class="smiley" onclick="onInit()"></button>
+    </div>
 
+    <button class="levels" onclick="changeLevel(4, 2)">Beginner</button>
+    <button class="levels" onclick="changeLevel(8, 14)">Pro</button>
+    <button class="levels" onclick="changeLevel(12, 32)">Exprert</button>
+    
     <table>
       <tbody class="board"></tbody>
       
@@ -25,6 +37,7 @@
       
 		</table>
     
+
     <div class="modal">
       <h2></h2>
       <button onclick="onInit()">Play Again</button>
