@@ -171,12 +171,12 @@ function onCellClicked(elCell, i, j) {
         if (gGame.manualMinesCount > 0) {
             placeMinesManualy(gBoard, i, j)
             setTimeout(() => {
-                hideMinesManualy(gBoard, i, j)
+                hideMinesManualy(i, j)
             }, 1000)
         }
         if (gGame.manualMinesCount === 0) {
             setTimeout(() => {
-                removeAllMarkedManualMines(gBoard)
+                removeAllMarkedManualMines()
             }, 2000)
             toggleManualMode()
             setMinesNegsCount(gBoard)
@@ -186,7 +186,9 @@ function onCellClicked(elCell, i, j) {
     }
 
     if (gGame.isFirstClick) {
-        toggleManualMode()
+        console.log('hi')
+        // toggleManualMode()
+        // console.log('gGame.isManualMode:', gGame.isManualMode)
         gGame.isFirstClick = false
         if (gGame.isManualMode) {
             toggleManualMode()

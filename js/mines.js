@@ -106,18 +106,15 @@ function placeMinesManualy(board, i, j) {
     console.log('gGame.manualMinesCount:', gGame.manualMinesCount)
 }
 
-function hideMinesManualy(board, i, j) {
-
-    const elBoard = document.querySelector('.board')
-    const elCell = elBoard.querySelector(`.cell-${i}-${j}`)
+function hideMinesManualy(i, j) {
+    const elCell = document.querySelector(`.cell-${i}-${j}`)
 
     elCell.classList.remove('marked-mine')
     elCell.innerHTML = ''
 }
 
-function removeAllMarkedManualMines(board) {
-    const elBoard = document.querySelector('.board')
-    const elCells = elBoard.querySelectorAll('.manual-mine')
+function removeAllMarkedManualMines() {
+    const elCells = document.querySelectorAll('.manual-mine')
 
     for (var i = 0; i < elCells.length; i++) {
         elCells[i].classList.remove('manual-mine')
