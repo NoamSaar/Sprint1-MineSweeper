@@ -9,17 +9,13 @@ function placeMines(board, mines, firstClickRow, firstClickCol) {
 
         const emptyCell = getRandomEmptyCell(board)
 
-        if (!emptyCell) {
-            break
-        }
+        if (!emptyCell) break
 
         const i = emptyCell.i
         const j = emptyCell.j
 
 
-        if (i === firstClickRow && j === firstClickCol) {
-            continue
-        }
+        if (i === firstClickRow && j === firstClickCol) continue
 
         if (!board[i][j].isMine) {
             board[i][j].isMine = true
@@ -34,6 +30,7 @@ function renderAfterMines(board) {
         for (var j = 0; j < board[i].length; j++) {
             const currCell = board[i][j]
             const elCell = elBoard.querySelector(`.cell-${i}-${j}`)
+
             if (currCell.isMine) {
                 elCell.classList.add('mine')
             }
@@ -78,4 +75,51 @@ function clearFromNegMines(board, rowIdx, colIdx) {
         }
     }
     return true
+}
+
+function toggleManualMode() {
+    gGame.isManualMode = !gGame.isManualMode
+
+    if (gGame.isManualMode) {
+        const elManualModeBtn = document.querySelector('.manual-mode-btn')
+        elManualModeBtn.classList.add('manual-mode')
+        console.log("manual mode on")
+    } else {
+        const elManualModeBtn = document.querySelector('.manual-mode-btn')
+        elManualModeBtn.classList.remove('manual-mode')
+        console.log("manual mode off")
+    }
+}
+
+function placeMinesManualy(board, i, j) {
+    if (board[i][j].isMine) return
+    board[i][j].isMine = true
+
+    const elBoard = document.querySelector('.board')
+    const elCell = elBoard.querySelector(`.cell-${i}-${j}`)
+    elCell.classList.add('mine')
+    elCell.classList.add('manual-mine')
+    console.log('mine:')
+    elCell.innerHTML = MINE
+
+    gGame.manualMinesCount--
+    console.log('gGame.manualMinesCount:', gGame.manualMinesCount)
+}
+
+function hideMinesManualy(board, i, j) {
+
+    const elBoard = document.querySelector('.board')
+    const elCell = elBoard.querySelector(`.cell-${i}-${j}`)
+
+    elCell.classList.remove('marked-mine')
+    elCell.innerHTML = ''
+}
+
+function removeAllMarkedManualMines(board) {
+    const elBoard = document.querySelector('.board')
+    const elCells = elBoard.querySelectorAll('.manual-mine')
+
+    for (var i = 0; i < elCells.length; i++) {
+        elCells[i].classList.remove('manual-mine')
+    }
 }

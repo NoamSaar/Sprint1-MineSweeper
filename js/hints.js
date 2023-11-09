@@ -1,6 +1,6 @@
 'use strict'
 
-const HINTS = '💡'
+const HINTS = '🔦'
 
 function generateHints(HINTS) {
     for (var i = 0; i < gBonus.hintsCount; i++) {
@@ -10,81 +10,85 @@ function generateHints(HINTS) {
 }
 
 function changeHintLook(i) {
-    const elHint = document.querySelector(`.hint${i}`)
+    const elHintBtn = document.querySelector(`.hint${i}`)
 
-    if (elHint.classList.contains('hint-used')) {
-        elHint.classList.remove('hint-used')
+    if (elHintBtn.classList.contains('hint-used')) {
+        elHintBtn.classList.remove('hint-used')
         gBonus.hintsNum = null
         gBonus.useHint = false
     } else {
-        elHint.classList.add('hint-used')
+        elHintBtn.classList.add('hint-used')
         gBonus.hintsNum = i
         gBonus.useHint = true
     }
 }
 
-// function useHints(i, j) {
-//     const currCell = gBoard[i][j]
+function useHints(i, j) {
+    const currCell = gBoard[i][j]
 
-//     if (!gGame.isOn || !currCell || currCell.isShown) return
+    if (!gGame.isOn || !currCell || currCell.isShownif || gGame.isFirstClick) return
 
-//     // revealNeg(gBoard, i, j)
-//     revealCellAndNeighbors(i, j)
+    // revealNeg(gBoard, i, j)
+    revealCellAndNeighbors(i, j)
 
-//     setTimeout(() => {
-//         // console.log("Removing hint:", gBonus.hintsNum)
-//         removeHint(gBonus.hintsNum)
-//         hideRevealedCells(i, j)
-//     }, 1000)
-// }
+    setTimeout(() => {
+        // console.log("Removing hint:", gBonus.hintsNum)
+        removeHint(gBonus.hintsNum)
+        hideRevealedCells(i, j)
+    }, 1000)
+}
 
-// var gRevealedCount = 0
-// function revealCellAndNeighbors(rowIdx, colIdx) {
-//     const elCell = document.querySelector(`.cell-${rowIdx}-${colIdx}`)
-//     elCell.classList.add('hint-revealed')
-//     console.log('reveal clicked cell:', gGame.shownCount)
-//     gRevealedCount++
+function revealCellAndNeighbors(rowIdx, colIdx) {
+    const elCell = document.querySelector(`.cell-${rowIdx}-${colIdx}`)
+    elCell.classList.add('hint-revealed')
 
-//     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-//         if (i < 0 || i >= gBoard.length) continue
-//         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-//             if (j < 0 || j >= gBoard[i].length) continue
-//             const currCell = gBoard[i][j]
-//             const elNeighborCell = document.querySelector(`.cell-${i}-${j}`)
-//             if (!currCell.isShown) {
-//                 gRevealedCount++
-//                 console.log(`gRevealedCount ${1}:`, gRevealedCount)
-//                 elNeighborCell.classList.add('hint-revealed')
-//                 console.log(`reveal ${i}-${j}`, gGame.shownCount)
-//             }
-//         }
-//     }
-// }
+    const cellClicked = gBoard[rowIdx][colIdx]
+    elCell.innerHTML = cellClicked.minesAroundCount
 
-// function hideRevealedCells(rowIdx, colIdx) {
-//     const elCell = document.querySelector(`.cell-${rowIdx}-${colIdx}`)
-//     elCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
-//     elCell.innerHTML = ''
-//     gGame.shownCount--
-//     console.log('hide clicked cell:', gGame.shownCount)
+
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= gBoard[i].length) continue
+            const currCell = gBoard[i][j]
+            const elNeighborCell = document.querySelector(`.cell-${i}-${j}`)
+            if (!currCell.isShown && !currCell.isMarked) {
+                if (currCell.isMine) {
+                    elNeighborCell.innerHTML = MINE
+                } else if (currCell.minesAroundCount === 0) {
+                    elNeighborCell.innerHTML = ''
+                } else {
+                    elNeighborCell.innerHTML = currCell.minesAroundCount
+                }
+                elNeighborCell.classList.add('hint-revealed')
+            }
+        }
+    }
+}
+
+function hideRevealedCells(rowIdx, colIdx) {
+    const elCell = document.querySelector(`.cell-${rowIdx}-${colIdx}`)
+    elCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
+    elCell.innerHTML = ''
+    // console.log('hide clicked cell:', gGame.shownCount)
     
-//     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-//         if (i < 0 || i >= gBoard.length) continue
-//         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-//             if (j < 0 || j >= gBoard[i].length) continue
-//             const currCell = gBoard[i][j]
-//             const elNeighborCell = document.querySelector(`.cell-${i}-${j}`)
-//             if (!currCell.isShown || elNeighborCell.classList.contains('hint-revealed')) {
-//                 elNeighborCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
-//                 elNeighborCell.innerHTML = ''
-//                 console.log(`hide ${i}-${j}`, gGame.shownCount)
-//             }
-//         }
-//     }
-//     gBoard[rowIdx][colIdx].isShown = false
-//     // gGame.shownCount -= gRevealedCount
-//     console.log('final gGame.shownCount', gGame.shownCount)
-// }
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= gBoard[i].length) continue
+            const currCell = gBoard[i][j]
+            const elNeighborCell = document.querySelector(`.cell-${i}-${j}`)
+            if (currCell.isMarked) continue
+            if (!currCell.isShown || elNeighborCell.classList.contains('hint-revealed')) {
+                elNeighborCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
+                elNeighborCell.innerHTML = ''
+                // console.log(`hide ${i}-${j}`, gGame.shownCount)
+            }
+        }
+    }
+    gBoard[rowIdx][colIdx].isShown = false
+    // console.log('final gGame.shownCount', gGame.shownCount)
+}
 
 function removeHint(i) {
     // console.log("Removing hint element:", i)

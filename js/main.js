@@ -4,38 +4,47 @@ const MINE = '💣'
 const MARK = '🚩'
 const WIN_S = '😎'
 const MINE_S = '🤯'
-const LOOSE_S = '🫠'
+const LOOSE_S = '☠️'
 const NORNAL_S = '😄'
-// const RIGHT_S = '🥳'
-// const HINTS = '💡'
-const STORAGE_KEY = 'minesweeper_best_score'
+const LIFE = '♥'
+const LOST_LIFE = '💔'
+
+// const STORAGE_KEY = 'minesweeper_best_score'
 
 var timerInterval
 
 var gBoard = []
+var gMoves = []
 
 const gGame = {
     isOn: false,
     isFirstClick: true,
     isVictory: true,
+    isDarkMode: false,
+    isManualMode: false,
 
     shownCount: 0,
     markedCount: 0,
     minesStricks: 0,
     secsPassed: 0,
     score: 0,
+    manualMinesCount: 0,
 }
 
-const gBonus = {    
+const gBonus = {
     useHint: false,
+    useSafe: false,
+
     hintsCount: 3,
     hintsNum: 0,
+    safeCount: 3,
+    safeNum: 0,
 }
 
 const gLevel = {
     SIZE: 4,
     MINES: 2,
-    LIVES: 2,
+    LIVES: 3,
 }
 
 function onInit() {
@@ -46,21 +55,36 @@ function onInit() {
     clearhints()
     updateBestScore()
 
+    gMoves = []
+
+    const storedDarkMode = localStorage.getItem('darkMode')
+    if (storedDarkMode !== null) {
+        if (storedDarkMode === 'true') {
+            displayDarkMode()
+        }
+    }
+
     if (timerInterval) stopTimer()
 
     const elTimer = document.querySelector('.timer')
-    elTimer.innerHTML = '000'
+    elTimer.innerHTML = '00:00'
 
     gGame.isOn = true
     gGame.isFirstClick = true
 
     gGame.score = 0
     updateScore(gGame.score)
+
     gGame.markedCount = 0
     gGame.shownCount = 0
     gGame.secsPassed = 0
     gGame.minesStricks = 0
 
+    gBonus.hintsCount = 3
+    gBonus.hintsNum = 0
+    gBonus.safeCount = 3
+
+    gGame.manualMinesCount = gLevel.MINES
     gClickedMinesCount = gLevel.LIVES
 
     // build and render empty board
@@ -86,15 +110,6 @@ function buildBoard(rows, cols) {
             board[i][j] = cell
         }
     }
-
-    // // setting mines in known places
-    // board[1][1].isMine = true
-    // board[3][3].isMine = true
-
-    // render board with the mines inside in rendom locations
-    // placeMines(board, gLevel.MINES)
-
-    // console.log('board:', board)
     return board
 }
 
@@ -133,7 +148,6 @@ function renderBoard(board) {
 function handleFirstClick(i, j) {
     placeMines(gBoard, gLevel.MINES, i, j)
     setMinesNegsCount(gBoard)
-    // console.log('gBoard:', gBoard)
     renderAfterMines(gBoard)
 }
 
@@ -141,22 +155,46 @@ function handleFirstClick(i, j) {
 function onCellClicked(elCell, i, j) {
     const currCell = gBoard[i][j]
 
+    if (!gGame.isOn || currCell.isMarked || currCell.isShown) return
+
     if (gBonus.useHint) {
         gBonus.useHint = false
         useHints(i, j)
 
         gGame.score -= 10
         if (gGame.score < 0) gGame.score = 0
-
         updateScore(gGame.score)
+        return
     }
 
-    if (!gGame.isOn || currCell.isMarked || currCell.isShown) return
+    if (gGame.isManualMode) {
+        if (gGame.manualMinesCount > 0) {
+            placeMinesManualy(gBoard, i, j)
+            setTimeout(() => {
+                hideMinesManualy(gBoard, i, j)
+            }, 1000)
+        }
+        if (gGame.manualMinesCount === 0) {
+            setTimeout(() => {
+                removeAllMarkedManualMines(gBoard)
+            }, 2000)
+            toggleManualMode()
+            setMinesNegsCount(gBoard)
+        }
+
+        return
+    }
 
     if (gGame.isFirstClick) {
+        toggleManualMode()
         gGame.isFirstClick = false
-        handleFirstClick(i, j)
-        startTimer()
+        if (gGame.isManualMode) {
+            toggleManualMode()
+            startTimer()
+        } else {
+            handleFirstClick(i, j)
+            startTimer()
+        }
     }
 
     if (currCell.isMine) {
@@ -178,8 +216,7 @@ function onCellClicked(elCell, i, j) {
         elCell.innerHTML = MINE                     // DOM
 
         gClickedMinesCount--
-        const elMinsCount = document.querySelector('.mines-count')
-        elMinsCount.innerHTML = gClickedMinesCount
+        changeLivesCount(gClickedMinesCount)
 
         if (gClickedMinesCount === 0) {
             changeLivesCount('-')
@@ -239,10 +276,10 @@ function expandShown(board, elCell, rowIdx, colIdx) {
 */
 
 function expandShown(board, elCell, rowIdx, colIdx) {
-    if (!isValidCell(rowIdx, colIdx) || 
-        board[rowIdx][colIdx].isShown || 
+    if (!isValidCell(rowIdx, colIdx) ||
+        board[rowIdx][colIdx].isShown ||
         board[rowIdx][colIdx].isMarked) return
-    
+
     const currCell = board[rowIdx][colIdx]
     elCell.classList.add('marked-not-mine')
     gGame.shownCount++
@@ -267,7 +304,6 @@ function onCellMarked(elCell, i, j) {
     if (!currCell.isShown) {
         // Toggle isMarked property
         currCell.isMarked = !currCell.isMarked      // Model
-        // console.log('gBoard:', gBoard)
 
         if (currCell.isMarked) {
             gGame.score += 10
@@ -293,8 +329,6 @@ function onCellMarked(elCell, i, j) {
 function checkGameOver() {
     const allMinesMarked = gGame.markedCount + gGame.minesStricks === gLevel.MINES
     const allNonMinesShown = gGame.shownCount === gLevel.SIZE ** 2 - gGame.markedCount
-    // console.log('allMinesMarked:', allMinesMarked)
-    // console.log('allNonMinesShown:', allNonMinesShown)
 
     if (allMinesMarked && allNonMinesShown) {
         gGame.isVictory = true
@@ -348,9 +382,14 @@ function startTimer() {
 }
 
 function updateTimer() {
-    const formattedTime = padNumber(gGame.secsPassed, 3)
+    const minutes = Math.floor(gGame.secsPassed / 60)
+    const seconds = gGame.secsPassed % 60
+
+    const formattedTime = padNumber(minutes, 2) + ':' + padNumber(seconds, 2)
+
     const elTimer = document.querySelector('.timer')
     elTimer.innerHTML = formattedTime
+
     gGame.secsPassed++
 }
 
@@ -370,10 +409,10 @@ function getClassName(position) {
 }
 
 function isValidCell(rowIdx, colIdx) {
-    return rowIdx >= 0 && 
-    rowIdx < gLevel.SIZE && 
-    colIdx >= 0 && 
-    colIdx < gLevel.SIZE
+    return rowIdx >= 0 &&
+        rowIdx < gLevel.SIZE &&
+        colIdx >= 0 &&
+        colIdx < gLevel.SIZE
 }
 
 function getCellElement(rowIdx, colIdx) {
@@ -400,8 +439,10 @@ function modalDisplay(action) {
 }
 
 function changeLivesCount(count) {
-    const elMinsCount = document.querySelector('.mines-count')
-    elMinsCount.innerHTML = count
+    const elLivesCount = document.querySelector('.lives-count')
+
+    const lifeEmoji = count > 0 ? LIFE : LOST_LIFE
+    elLivesCount.innerHTML = lifeEmoji.repeat(Math.max(0, count)).split('').join('&nbsp;')
 }
 
 function changeSmiley(EMOJI) {
@@ -416,35 +457,25 @@ function changeLevel(level, mines) {
     onInit()
 }
 
-function updateScore(score) {
-    const elScore = document.querySelector('.score')
-    elScore.innerHTML = score
-}
-
-function saveBestScore(score) {
-    const bestScore = localStorage.getItem(STORAGE_KEY)
-    if (bestScore === null || score > bestScore) {
-        localStorage.setItem(STORAGE_KEY, score)
-    }
-}
-
-function getBestScore() {
-    return localStorage.getItem(STORAGE_KEY) || 'N/A'
-}
-
-function updateBestScore() {
-    const elBestScoreSpan = document.querySelector('.best-score')
-    elBestScoreSpan.innerHTML = getBestScore()
-}
-
 function displayDarkMode() {
     const elDarkModeBtn = document.querySelector('.dark-mode-btn')
     const isDarkMode = document.body.classList.toggle('dark-mode')
+    const elContainer = document.querySelector('.container');
+
+
+    localStorage.setItem('darkMode', isDarkMode)
 
     elDarkModeBtn.innerHTML = isDarkMode ? 'Light Mode' : 'Dark Mode'
     elDarkModeBtn.classList.toggle('dark-mode')
-}
 
-function safeClick() {
+    elContainer.classList.toggle('dark-mode-container', isDarkMode)
 
+    const elTable = document.querySelector('.board')
+    const tdList = elTable.querySelectorAll('td')
+
+
+
+    tdList.forEach(td => {
+        td.classList.toggle('dark-mode-table', isDarkMode)
+    })
 }

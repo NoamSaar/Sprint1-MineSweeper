@@ -33,10 +33,22 @@ function getRandomEmptyCell(board) {
     return emptyCells[randIdx]
 }
 
-function renderCell(location, value) {
-    // location is an object like this - { i: 2, j: 7 }
+
+function renderCell(location, value, bollean, className) {
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-    // OR:       = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+    if (!value) value = ''
+    elCell.innerHTML = value
+
+
+    if(bollean) {
+        elCell.classList.add(className)
+    } else {
+        elCell.classList.remove(className)
+    }
+}
+
+function renderCell(location, value) {
+    const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
     elCell.innerHTML = value
 }
 
