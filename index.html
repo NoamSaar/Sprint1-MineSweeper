@@ -1,50 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mine Sweeper</title>
-    <link rel="stylesheet" href="css/main.css" />
-  </head>
 
-  <body onload="onInit()">
-    <h1>Mine Sweeper</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mine Sweeper</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
 
-    <h2 class="lives">Lives Left: <span class="mines-count">2</span> | Hints: 
-      <span class="hints1">💡</span>
-      <span class="hints2">💡</span>
-      <span class="hints3">💡</span>
-    </h2>
-    
-    <h2>Timer: <span class="timer">000</span></h2>
+<body onload="onInit()">
+  <h1>Mine Sweeper</h1>
 
-    <div>
-      <button class="smiley" onclick="onInit()"></button>
-    </div>
+  <div>
+    <button class="dark-mode-btn dark-mode" title="Display Mode" onclick="displayDarkMode()">Dark Mode</button>
+  </div>
 
-    <button class="levels" onclick="changeLevel(4, 2)">Beginner</button>
-    <button class="levels" onclick="changeLevel(8, 14)">Pro</button>
-    <button class="levels" onclick="changeLevel(12, 32)">Exprert</button>
-    
-    <table>
-      <tbody class="board"></tbody>
-      
-      <tfoot>
-        <tr>
-          <td colspan="4">© Noam Saar</td>
-        </tr>
-      </tfoot>
-      
-		</table>
-    
+  <h2>BEST SCORE: <span class="best-score"></span></h2>
 
-    <div class="modal">
-      <h2></h2>
-      <button onclick="onInit()">Play Again</button>
-    </div>
+  <h2 class="lives">Lives Left: <span class="mines-count">2</span>
+    | Score: <span class="score">0</span>
+  </h2>
 
-    <script src="js/util.js"></script>
-    <script src="js/main.js"></script>
+  <h2>Timer: <span class="timer">000</span></h2>
 
-  </body>
+  <div>
+    <button class="emoji hint1 button-bg" title="hint" onclick="changeHintLook(1)">
+    </button>
+
+    <button class="emoji hint2 button-bg" title="hint" onclick="changeHintLook(2)">
+    </button>
+
+    <button class="emoji hint3 button-bg" title="hint" onclick="changeHintLook(3)">
+    </button>
+
+    <button class="emoji safe-click button-bg" title="safe-click" onclick="safeClick()">🛟</button>
+  </div>
+
+  <div>
+  </div>
+
+  <div>
+    <button class="smiley button-bg" title="restart" onclick="onInit()"></button>
+  </div>
+
+  <button class="levels" onclick="changeLevel(4, 2)">Beginner</button>
+  <button class="levels" onclick="changeLevel(8, 14)">Pro</button>
+  <button class="levels" onclick="changeLevel(12, 32)">Exprert</button>
+
+  <table title="Board">
+    <tbody class="board"></tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="4">© Noam Saar</td>
+      </tr>
+    </tfoot>
+
+  </table>
+
+
+  <div class="modal">
+    <h2></h2>
+    <button onclick="onInit()">Play Again</button>
+  </div>
+
+  <script src="js/util.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/mines.js"></script>
+  <script src="js/hints.js"></script>
+
+</body>
+
 </html>

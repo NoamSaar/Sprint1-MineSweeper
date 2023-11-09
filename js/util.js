@@ -16,12 +16,12 @@ function createBoard(rows, cols, obj) {
     return board
 }
 
-function getRandomEmptyCell(ELEMENT) {
+function getRandomEmptyCell(board) {
     const emptyCells = []
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            const cell = gBoard[i][j]
-            if (cell !== ELEMENT) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[i].length; j++) {
+            const cell = board[i][j]
+            if (!cell.isMine) {
                 emptyCells.push({ i, j })
             }
         }

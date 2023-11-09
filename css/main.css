@@ -6,6 +6,18 @@ body {
     text-align: center;
 }
 
+h1 {
+    font-size: 5em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 2em;
+}
+
 table {
     margin: 20px auto;
 }
@@ -21,7 +33,6 @@ tfoot td {
     cursor: pointer;
 }
 
-
 .marked-mine {
     background-color: #620b0b94;
 }
@@ -30,12 +41,16 @@ tfoot td {
     background-color: #74656594;
 }
 
+.hint-revealed {
+    background-color: #757474;
+}
+
 .modal {
     padding: 5px;
     width: 300px;
     border: 2px solid Black;
     position: fixed;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 10px;
@@ -48,12 +63,28 @@ button {
     /* border-radius: 10px; */
 }
 
-.smiley {
-    font-size: 4em;
+.button-bg {
     background-color: transparent;
     border: none;
 }
 
+.emoji {
+    font-size: 3em;
+}
+
+.hint-used {
+    text-shadow: 0 0 20px yellow;
+}
+
+.smiley {
+    font-size: 4em;
+}
+
 .hidden {
     display: none;
+}
+
+.dark-mode {
+    background-color: rgba(0, 0, 0, 0.698);
+    color: white;
 }
