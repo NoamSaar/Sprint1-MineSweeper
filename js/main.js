@@ -72,7 +72,7 @@ function onInit() {
 
     gGame.isOn = true
     gGame.isFirstClick = true
-    // gGame.isManualMode = false
+    gGame.manualMinesPlaced = false
 
     gGame.score = 0
     updateScore(gGame.score)
