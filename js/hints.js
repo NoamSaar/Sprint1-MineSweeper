@@ -12,6 +12,7 @@ function generateHints(count) {
 function changeHintLook(i) {
     const elHintBtn = document.querySelector(`.hint${i}`)
 
+
     if (elHintBtn.classList.contains('hint-used')) {
         elHintBtn.classList.remove('hint-used')
         gBonus.hintsNum = null
@@ -127,7 +128,7 @@ function useMegaHint() {
 
     setTimeout (() => {
         displayMegaHintCells(topLeftCoords, bottomRightCoords, false)
-        
+
         const elCell1 = document.querySelector(`.cell-${gBonus.megaCoor1.i}-${gBonus.megaCoor1.j}`)
         elCell1.classList.remove('manual-mark')
 

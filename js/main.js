@@ -37,6 +37,7 @@ const gBonus = {
     useHint: false,
     useMegaHint: false,
     useSafe: false,
+    useMine: false,
 
     megaCoor1: null,
     megaCoor2: null,
@@ -45,6 +46,7 @@ const gBonus = {
     getMegaCount: 0,
     safeCount: 3,
     safeNum: 0,
+    terminatedMinesCount: 0,
 }
 
 const gLevel = {
@@ -61,13 +63,9 @@ function onInit() {
     clearhints()
     updateBestScore()
 
-    const elMegaHintBtn = document.querySelector(`.mega-hint`)
-    elMegaHintBtn.classList.remove('no-left')
-    elMegaHintBtn.disabled = false
-
-    const elSafeBtn = document.querySelector('.safe-btn')
-    elSafeBtn.classList.remove('no-left')
-    elSafeBtn.disabled = false
+    toggleDisabledBtn('mega-hint', 'no-left', 'remove', true)
+    toggleDisabledBtn('safe-btn', 'no-left', 'remove', true)
+    toggleDisabledBtn('mine-ex-btn', 'no-left', 'remove', true)
 
     gGameMoves = []
     // gGameMoves.push(copyGameBoard(gBoard))
@@ -99,6 +97,7 @@ function onInit() {
     gBonus.hintsCount = 3
     gBonus.hintsNum = 0
     gBonus.safeCount = 3
+    gBonus.terminatedMinesCount = 0
 
     gGame.manualMinesCount = gLevel.MINES
     gClickedMinesCount = gLevel.LIVES
@@ -235,6 +234,10 @@ function onCellClicked(elCell, i, j) {
         // console.log('gGame.isManualMode:', gGame.isManualMode)
         gGame.isFirstClick = false
 
+        toggleDisabledBtn('mega-hint', 'no-left', 'remove', false)
+        toggleDisabledBtn('safe-btn', 'no-left', 'remove', false)
+        toggleDisabledBtn('mine-ex-btn', 'no-left', 'remove', false)
+    
         handleFirstClick(i, j)
         startTimer()
     }
@@ -387,7 +390,7 @@ function undoLastMove() {
 }
 
 function checkGameOver() {
-    const allMinesMarked = gGame.markedCount + gGame.minesStricks === gLevel.MINES
+    const allMinesMarked = gGame.markedCount + gGame.minesStricks === gLevel.MINES - gBonus.terminatedMinesCount
     const allNonMinesShown = gGame.shownCount === gLevel.SIZE ** 2 - gGame.markedCount
 
     if (allMinesMarked && allNonMinesShown) {
@@ -543,4 +546,14 @@ function displayDarkMode() {
     tdList.forEach(td => {
         td.classList.toggle('dark-mode-table', isDarkMode)
     })
+}
+
+function toggleDisabledBtn(btnClassName, designClass, action, isShown) {
+    const elBtn = document.querySelector(`.${btnClassName}`)
+    if (action === 'add') {
+        elBtn.classList.add(designClass)
+    } else {
+        elBtn.classList.remove(designClass)
+    }
+    elBtn.disabled = isShown
 }

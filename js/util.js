@@ -27,6 +27,23 @@ function copyBoard(board) {
     return copiedBoard
 }
 
+function getRandomCell(board, condition) {
+    const Cells = []
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[i].length; j++) {
+            const cell = board[i][j]
+            if (condition(cell)) {
+                Cells.push({ i, j })
+            }
+        }
+    }
+
+    if (Cells.length === 0) return null
+
+    const randIdx = getRandomInt(0, Cells.length)
+    return Cells[randIdx]
+}
+
 function getRandomEmptyCell(board) {
     const emptyCells = []
     for (var i = 0; i < board.length; i++) {
@@ -63,7 +80,6 @@ function renderElCell(location, value) {
     elCell.innerHTML = value
 }
 
-// getRamdomInt
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

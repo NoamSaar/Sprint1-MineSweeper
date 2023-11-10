@@ -7,7 +7,8 @@ function placeMines(board, mines, firstClickRow, firstClickCol) {
         // const i = getRandomInt(0, board.length)
         // const j = getRandomInt(0, board[0].length)
 
-        const emptyCell = getRandomEmptyCell(board)
+        // const emptyCell = getRandomEmptyCell(board)
+        const emptyCell = getRandomCell(board, (cell) => !cell.isMine)
 
         if (!emptyCell) break
 
@@ -123,15 +124,27 @@ function removeAllMarkedManualMines() {
     }
 }
 
-
 function exterminateMines() {
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            if (gBoard[i][j].isMine) {
-                gBoard[i][j].isMine = false
-                const elCell = document.querySelector(`.cell-${i}-${j}`)
-                elCell.innerHTML = ''
-            }
-        }
+    toggleDisabledBtn('mine-ex-btn', 'mine-exterminator', 'add', false)
+    if (!gGame.isOn || gGame.isFirstClick) return
+    
+    const MinesToTerminate = gLevel.MINES === 2 ? 1 : 3
+    
+    for (var i = 0; i < MinesToTerminate; i++) {
+        const mineCell = getRandomCell(gBoard, (cell) => cell.isMine)
+        
+        const elCell = document.querySelector(`.cell-${mineCell.i}-${mineCell.j}`)
+        elCell.classList.add('marked-mine')
+        setTimeout(() => {
+            elCell.classList.remove('marked-mine')
+            toggleDisabledBtn('mine-ex-btn', 'mine-exterminator', 'remove', false)
+            toggleDisabledBtn('mine-ex-btn', 'no-left', 'add', true)
+        }, 2000)
+
+        gBoard[mineCell.i][mineCell.j].isMine = false
+        gBonus.terminatedMinesCount++
     }
+    setMinesNegsCount(gBoard)
+    renderAfterMines(gBoard)
+
 }

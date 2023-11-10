@@ -18,26 +18,23 @@ function safeClick() {
 
     const elSafeCount = document.querySelector('.safe-count')
     elSafeCount.innerHTML = gBonus.safeCount
-    // console.log('gBonus.safeCount:', gBonus.safeCount)
 }
 
 function revealSafeCell(board) {
-    var emptyCell = getRandomEmptyCell(board)
+    var emptyCell = getRandomCell(board, (cell) => !cell.isMine)
 
     if (!emptyCell) return
 
     var isCellShown = gBoard[emptyCell.i][emptyCell.j].isShown
 
     while (isCellShown) {
-        emptyCell = getRandomEmptyCell(board)
+        emptyCell = getRandomCell(board, (cell) => !cell.isMine)
         isCellShown = gBoard[emptyCell.i][emptyCell.j].isShown
     }
 
     const cellContent = gBoard[emptyCell.i][emptyCell.j].minesAroundCount
-    // console.log('cellContent:', cellContent)
 
     renderCell(emptyCell, cellContent, true, 'hint-revealed')
-    // console.log('gBonus.safeCount:', gBonus.safeCount)
 
     setTimeout(() => {
         renderCell(emptyCell, null, false, 'hint-revealed')
