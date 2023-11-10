@@ -52,7 +52,7 @@ function onInit() {
     modalDisplay('add')
     changeLivesCount(gLevel.LIVES)
     changeSmiley(NORNAL_S)
-    generateHints(HINTS)
+    generateHints(gBonus.hintsCount)
     clearhints()
     updateBestScore()
 

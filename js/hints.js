@@ -2,8 +2,8 @@
 
 const HINTS = '🔦'
 
-function generateHints(HINTS) {
-    for (var i = 0; i < gBonus.hintsCount; i++) {
+function generateHints(count) {
+    for (var i = 0; i < count; i++) {
         const elHints = document.querySelector(`.hint${i + 1}`)
         elHints.innerHTML = HINTS
     }
