@@ -226,6 +226,10 @@ function onCellClicked(elCell, i, j) {
             gameOver()
         }
 
+        if (gGame.shownCount === gLevel.SIZE ** 2) {
+            gameOver()
+        }
+
     } else {
         changeSmiley(NORNAL_S)
         if (clearFromNegMines(gBoard, i, j)) {
@@ -337,6 +341,10 @@ function checkGameOver() {
         return true
     }
 
+    if (gGame.shownCount === gLevel.SIZE ** 2) {
+        gGame.isVictory = false
+        return true
+    }
     return false
 }
 
