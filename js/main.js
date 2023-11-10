@@ -22,6 +22,7 @@ const gGame = {
     isVictory: true,
     isDarkMode: false,
     isManualMode: false,
+    manualMinesPlaced: false,
 
     shownCount: 0,
     markedCount: 0,
@@ -71,6 +72,7 @@ function onInit() {
 
     gGame.isOn = true
     gGame.isFirstClick = true
+    // gGame.isManualMode = false
 
     gGame.score = 0
     updateScore(gGame.score)
@@ -174,29 +176,25 @@ function onCellClicked(elCell, i, j) {
                 hideMinesManualy(i, j)
             }, 1000)
         }
+
         if (gGame.manualMinesCount === 0) {
             setTimeout(() => {
                 removeAllMarkedManualMines()
             }, 2000)
             toggleManualMode()
             setMinesNegsCount(gBoard)
+            gGame.manualMinesPlaced = true
         }
-
         return
     }
 
-    if (gGame.isFirstClick) {
-        console.log('hi')
-        // toggleManualMode()
-        // console.log('gGame.isManualMode:', gGame.isManualMode)
+
+    if (gGame.isFirstClick && !gGame.manualMinesPlaced) {
+        console.log('gGame.isManualMode:', gGame.isManualMode)
         gGame.isFirstClick = false
-        if (gGame.isManualMode) {
-            toggleManualMode()
-            startTimer()
-        } else {
-            handleFirstClick(i, j)
-            startTimer()
-        }
+
+        handleFirstClick(i, j)
+        startTimer()
     }
 
     if (currCell.isMine) {
