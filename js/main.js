@@ -55,21 +55,21 @@ function onInit() {
     generateHints(gBonus.hintsCount)
     clearhints()
     updateBestScore()
-
+    
     gMoves = []
-
+    
     const storedDarkMode = localStorage.getItem('darkMode')
     if (storedDarkMode !== null) {
         if (storedDarkMode === 'true') {
             displayDarkMode()
         }
     }
-
+    
     if (timerInterval) stopTimer()
-
+    
     const elTimer = document.querySelector('.timer')
     elTimer.innerHTML = '00:00'
-
+    
     gGame.isOn = true
     gGame.isFirstClick = true
     gGame.manualMinesPlaced = false
@@ -155,6 +155,8 @@ function handleFirstClick(i, j) {
 
 // cell click event
 function onCellClicked(elCell, i, j) {
+    console.log('gGame.manualMinesPlaced:', gGame.manualMinesPlaced)
+    console.log('gGame.isFirstClick:', gGame.isFirstClick)
     const currCell = gBoard[i][j]
 
     if (!gGame.isOn || currCell.isMarked || currCell.isShown) return
@@ -345,7 +347,7 @@ function gameOver() {
 
     saveBestScore(gGame.score)
     updateBestScore()
-
+    gGame.manualMinesPlaced = false
 }
 
 function displayAllMines(board) {
