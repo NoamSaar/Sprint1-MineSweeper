@@ -345,6 +345,7 @@ function checkGameOver() {
         gGame.isVictory = false
         return true
     }
+    
     return false
 }
 
