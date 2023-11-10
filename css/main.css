@@ -168,7 +168,7 @@ button {
     background-color: #620b0b94;
 }
 
-.manual-mine {
+.manual-mark {
     background-color: #620b0b94;
 }
 
@@ -182,6 +182,15 @@ button {
 
 .hint-used {
     text-shadow: 0 0 20px yellow;
+}
+
+.mega-hint-used {
+    text-shadow: 0 0 20px rgb(255, 42, 0);
+    font-size: 4em;
+}
+
+.no-left {
+    text-shadow: 0 0 20px rgba(67, 66, 66, 0.586);
 }
 
 .safe-used {

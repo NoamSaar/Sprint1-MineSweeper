@@ -6,10 +6,18 @@ function safeClick() {
     revealSafeCell(gBoard)
 
     gBonus.safeCount--
-    if (gBonus.safeCount === 0) gBonus.safeCount = null
+    if (gBonus.safeCount === 0) {
+        gBonus.safeCount = null
 
-    const elSafeSpan = document.querySelector('.safe-count')
-    elSafeSpan.innerHTML = gBonus.safeCount
+        setTimeout(() => {
+            const elSafeBtn = document.querySelector('.safe-btn')
+            elSafeBtn.classList.add('no-left')
+            elSafeBtn.disabled = true
+        }, 1500)
+    }
+
+    const elSafeCount = document.querySelector('.safe-count')
+    elSafeCount.innerHTML = gBonus.safeCount
     // console.log('gBonus.safeCount:', gBonus.safeCount)
 }
 
@@ -19,7 +27,7 @@ function revealSafeCell(board) {
     if (!emptyCell) return
 
     var isCellShown = gBoard[emptyCell.i][emptyCell.j].isShown
-    
+
     while (isCellShown) {
         emptyCell = getRandomEmptyCell(board)
         isCellShown = gBoard[emptyCell.i][emptyCell.j].isShown

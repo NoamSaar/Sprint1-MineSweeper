@@ -14,7 +14,7 @@ const LOST_LIFE = '💔'
 var timerInterval
 
 var gBoard = []
-var gMoves = []
+var gGameMoves = []
 
 const gGame = {
     isOn: false,
@@ -23,6 +23,7 @@ const gGame = {
     isDarkMode: false,
     isManualMode: false,
     manualMinesPlaced: false,
+    isMegaHint: false,
 
     shownCount: 0,
     markedCount: 0,
@@ -34,10 +35,14 @@ const gGame = {
 
 const gBonus = {
     useHint: false,
+    useMegaHint: false,
     useSafe: false,
 
+    megaCoor1: null,
+    megaCoor2: null,
     hintsCount: 3,
     hintsNum: 0,
+    getMegaCount: 0,
     safeCount: 3,
     safeNum: 0,
 }
@@ -55,28 +60,37 @@ function onInit() {
     generateHints(gBonus.hintsCount)
     clearhints()
     updateBestScore()
-    
-    gMoves = []
-    
+
+    const elMegaHintBtn = document.querySelector(`.mega-hint`)
+    elMegaHintBtn.classList.remove('no-left')
+    elMegaHintBtn.disabled = false
+
+    const elSafeBtn = document.querySelector('.safe-btn')
+    elSafeBtn.classList.remove('no-left')
+    elSafeBtn.disabled = false
+
+    gGameMoves = []
+    // gGameMoves.push(copyGameBoard(gBoard))
+
     const storedDarkMode = localStorage.getItem('darkMode')
     if (storedDarkMode !== null) {
         if (storedDarkMode === 'true') {
             displayDarkMode()
         }
     }
-    
+
     if (timerInterval) stopTimer()
-    
     const elTimer = document.querySelector('.timer')
     elTimer.innerHTML = '00:00'
-    
-    gGame.isOn = true
-    gGame.isFirstClick = true
-    gGame.manualMinesPlaced = false
 
     gGame.score = 0
     updateScore(gGame.score)
 
+    gGame.isOn = true
+    gGame.isFirstClick = true
+    gGame.manualMinesPlaced = false
+
+    gBonus.getMegaCount = 0
     gGame.markedCount = 0
     gGame.shownCount = 0
     gGame.secsPassed = 0
@@ -92,7 +106,6 @@ function onInit() {
     // build and render empty board
     gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE)               // Model
     renderBoard(gBoard)                                         // DOM
-    // console.log('gBoard:', gBoard)                           
 
     setMinesNegsCount(gBoard)
 }
@@ -151,12 +164,12 @@ function handleFirstClick(i, j) {
     placeMines(gBoard, gLevel.MINES, i, j)
     setMinesNegsCount(gBoard)
     renderAfterMines(gBoard)
+    gGameMoves.push(copyBoard(gBoard))
 }
 
 // cell click event
 function onCellClicked(elCell, i, j) {
-    console.log('gGame.manualMinesPlaced:', gGame.manualMinesPlaced)
-    console.log('gGame.isFirstClick:', gGame.isFirstClick)
+
     const currCell = gBoard[i][j]
 
     if (!gGame.isOn || currCell.isMarked || currCell.isShown) return
@@ -170,6 +183,33 @@ function onCellClicked(elCell, i, j) {
         updateScore(gGame.score)
         return
     }
+
+    if (gBonus.useMegaHint) {
+        if (gBonus.getMegaCount) {
+            if (gBonus.getMegaCount === 1) {
+                gBonus.megaCoor2 = { i, j }
+                gGame.score -= 10
+                useMegaHint()
+                gBonus.useMegaHint = false
+                gBonus.getMegaCount = 0
+            } else {
+                gBonus.megaCoor1 = [i, j]
+            }
+        } else {
+            gBonus.getMegaCount = 1
+            gBonus.megaCoor1 = { i, j }
+
+            const currCell = gBoard[gBonus.megaCoor1.i][gBonus.megaCoor1.j]
+            const elCell1 = document.querySelector(`.cell-${gBonus.megaCoor1.i}-${gBonus.megaCoor1.j}`)
+            elCell1.classList.add('manual-mark')
+
+        }
+
+        if (gGame.score < 0) gGame.score = 0
+        updateScore(gGame.score)
+        return
+    }
+    // gGameMoves.push(copyBoard(gBoard))
 
     if (gGame.isManualMode) {
         if (gGame.manualMinesCount > 0) {
@@ -192,7 +232,7 @@ function onCellClicked(elCell, i, j) {
 
 
     if (gGame.isFirstClick && !gGame.manualMinesPlaced) {
-        console.log('gGame.isManualMode:', gGame.isManualMode)
+        // console.log('gGame.isManualMode:', gGame.isManualMode)
         gGame.isFirstClick = false
 
         handleFirstClick(i, j)
@@ -332,6 +372,20 @@ function onCellMarked(elCell, i, j) {
     }
 }
 
+function undoLastMove() {
+    console.log('hi')
+    console.log('gBoard before pop:', gBoard)
+    if (gGameMoves.length > 0) {
+        var prevState = gGameMoves.pop()
+        console.log('prevState:', prevState)
+
+        gBoard = prevState
+        console.log('gBoard after pop:', gBoard)
+
+        renderAfterMines(gBoard)
+    }
+}
+
 function checkGameOver() {
     const allMinesMarked = gGame.markedCount + gGame.minesStricks === gLevel.MINES
     const allNonMinesShown = gGame.shownCount === gLevel.SIZE ** 2 - gGame.markedCount
@@ -345,7 +399,7 @@ function checkGameOver() {
         gGame.isVictory = false
         return true
     }
-    
+
     return false
 }
 

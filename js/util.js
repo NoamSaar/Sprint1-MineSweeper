@@ -16,6 +16,17 @@ function createBoard(rows, cols, obj) {
     return board
 }
 
+function copyBoard(board) {
+    var copiedBoard = [];
+    for (var i = 0; i < board.length; i++) {
+        copiedBoard[i] = []
+        for (var j = 0; j < board[i].length; j++) {
+            copiedBoard[i][j] = board[i][j]
+        }
+    }
+    return copiedBoard
+}
+
 function getRandomEmptyCell(board) {
     const emptyCells = []
     for (var i = 0; i < board.length; i++) {
@@ -47,10 +58,10 @@ function renderCell(location, value, bollean, className) {
     }
 }
 
-// function renderCell(location, value) {
-//     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-//     elCell.innerHTML = value
-// }
+function renderElCell(location, value) {
+    const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
+    elCell.innerHTML = value
+}
 
 // getRamdomInt
 function getRandomInt(min, max) {

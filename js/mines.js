@@ -98,25 +98,40 @@ function placeMinesManualy(board, i, j) {
     const elBoard = document.querySelector('.board')
     const elCell = elBoard.querySelector(`.cell-${i}-${j}`)
     elCell.classList.add('mine')
-    elCell.classList.add('manual-mine')
+    elCell.classList.add('manual-mark')
     console.log('mine:')
     elCell.innerHTML = MINE
 
     gGame.manualMinesCount--
     console.log('gGame.manualMinesCount:', gGame.manualMinesCount)
+
+    gGameMoves.push(copyBoard(gBoard))
 }
 
 function hideMinesManualy(i, j) {
     const elCell = document.querySelector(`.cell-${i}-${j}`)
 
-    elCell.classList.remove('marked-mine')
+    elCell.classList.remove('marked-mark')
     elCell.innerHTML = ''
 }
 
 function removeAllMarkedManualMines() {
-    const elCells = document.querySelectorAll('.manual-mine')
+    const elCells = document.querySelectorAll('.manual-mark')
 
     for (var i = 0; i < elCells.length; i++) {
-        elCells[i].classList.remove('manual-mine')
+        elCells[i].classList.remove('manual-mark')
+    }
+}
+
+
+function exterminateMines() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            if (gBoard[i][j].isMine) {
+                gBoard[i][j].isMine = false
+                const elCell = document.querySelector(`.cell-${i}-${j}`)
+                elCell.innerHTML = ''
+            }
+        }
     }
 }
