@@ -82,7 +82,7 @@ function toggleBtn(btnClassName, designClass, action, isShown) {
 
 function toggleDisabledBtn(btnClassName, isShown) {
     if (btnClassName === 'hint') {
-        for (var i = 0; i < gBonus.shownCellsCount; i++) {
+        for (var i = 0; i < gBonus.totalHintsCount; i++) {
             const elHintsBtn = document.querySelector(`.hint${i + 1}`)
             elHintsBtn.disabled = isShown
         }
