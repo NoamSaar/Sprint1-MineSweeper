@@ -7,11 +7,8 @@ const MINE_S = '🤯'
 const LOOSE_S = '☠️'
 const NORNAL_S = '😄'
 const LIFE = '♥'
-const LOST_LIFE = '💔'
 
-// const STORAGE_KEY = 'minesweeper_best_score'
-
-var timerInterval
+var gTimerInterval
 
 var gBoard = []
 var gGameMoves = []
@@ -24,10 +21,10 @@ const gGame = {
     isDarkMode: false,
     isManualMode: false,
     isMegaHint: false,
-    
+
     manualMinesPlaced: false,
 
-    timerInterval, 
+    gTimerInterval,
     shownCellsCount: 0,
     markedCellsCount: 0,
     minesStricks: 0,
@@ -76,6 +73,7 @@ function onInit() {
     renderBoard(gBoard)                                         // DOM
     setMinesNegsCount(gBoard)
     gGameMoves.push(copyBoard(gBoard))
+    console.log('EMPTY gGameMoves:', gGameMoves)
 }
 
 function buildBoard(rows, cols) {
@@ -107,8 +105,6 @@ function renderBoard(board) {
 
             var cellClass = getClassName({ i, j })
 
-            // if (currCell.isMine) cellClass += ' mine'
-
             const title = `cell: ${i}, ${j}`
 
             strHTML += `\t<td class="cell ${cellClass}" title="${title}" 
@@ -116,13 +112,10 @@ function renderBoard(board) {
             onclick="onCellClicked(this, ${i}, ${j})"
             oncontextmenu="onMarkCell(this, ${i}, ${j})">`
 
-            // if (currCell.isMine) strHTML += MINE
-
             strHTML += '</td>\n'
         }
         strHTML += '</tr>\n'
     }
-    // console.log('strHTML is:', strHTML)
     elBoard.innerHTML = strHTML
 }
 
@@ -130,8 +123,9 @@ function handleFirstClick(i, j) {
     placeMines(gBoard, gLevel.MINES, i, j)
     setMinesNegsCount(gBoard)
     renderAfterMines(gBoard)
+
     gGameMoves.push(copyBoard(gBoard))
-    console.log('gGameMoves:', gGameMoves)
+    console.log('FIRST gGameMoves:', gGameMoves)
 }
 
 function onCellClicked(elCell, i, j) {
@@ -251,6 +245,9 @@ function handleMineClicked(elCell, currCell) {
     gClickedMinesCount--
     changeLivesCount(gClickedMinesCount)
 
+    gGameMoves.push(copyBoard(gBoard))
+    console.log('MINE gGameMoves:', gGameMoves)
+
     if (gClickedMinesCount === 0) {
         changeLivesCount('-')
         displayAllMines(gBoard)
@@ -281,13 +278,16 @@ function handleNonMineClicked(elCell, currCell, i, j) {
         renderNegCount(i, j)                        // DOM
     }
 
+    gGameMoves.push(copyBoard(gBoard))
+    console.log('CELL gGameMoves:', gGameMoves)
+
     if (checkGameOver()) {
         gameOver()
     }
 }
 
 function handleTimer() {
-    if (gGame.timerInterval) stopTimer()
+    if (gGame.gTimerInterval) stopTimer()
     const elTimer = document.querySelector('.timer')
     elTimer.innerHTML = '00:00'
 }
@@ -351,17 +351,18 @@ function onMarkCell(elCell, i, j) {
     }
 }
 
+
 function undoLastMove() {
     console.log('undo clicked')
-    console.log('gGameMoves:', gGameMoves)
+    console.log('UNDO gGameMoves:', gGameMoves)
     if (!gGame.isOn) return
 
-    if (gGameMoves.length > 0) {
-        gBoard = copyBoard(gGameMoves.pop())
-        console.log('gBoard:', gBoard)
-        renderAfterMines(gBoard)
-    }
+    const prevState = gGameMoves[gGameMoves.length - 1]
+    gBoard = copyBoard(prevState)
+    setMinesNegsCount(gBoard)
+    renderBoard(gBoard)
 }
+
 
 function checkGameOver() {
     const allMinesMarked = gGame.markedCellsCount + gGame.minesStricks === gLevel.MINES - gBonus.terminatedMinesCount
@@ -431,7 +432,7 @@ function countNeighborAround(board, rowIdx, colIdx) {
 
 function startTimer() {
     if (gGame.isFirstClick) return
-    gGame.timerInterval = setInterval(updateTimer, 1000)
+    gGame.gTimerInterval = setInterval(updateTimer, 1000)
     updateTimer()
 }
 
@@ -448,7 +449,7 @@ function updateTimer() {
 }
 
 function stopTimer() {
-    clearInterval(gGame.timerInterval)
+    clearInterval(gGame.gTimerInterval)
 }
 
 function padNumber(number, width) {

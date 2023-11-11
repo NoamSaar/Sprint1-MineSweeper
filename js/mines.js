@@ -4,10 +4,6 @@ var gClickedMinesCount = gLevel.LIVES
 
 function placeMines(board, mines, firstClickRow, firstClickCol) {
     while (mines > 0) {
-        // const i = getRandomInt(0, board.length)
-        // const j = getRandomInt(0, board[0].length)
-
-        // const emptyCell = getRandomEmptyCell(board)
         const emptyCell = getRandomCell(board, (cell) => !cell.isMine)
 
         if (!emptyCell) break
@@ -23,6 +19,8 @@ function placeMines(board, mines, firstClickRow, firstClickCol) {
             mines--
         }
     }
+
+    gGameMoves.push(copyBoard(gBoard))
 }
 
 function renderAfterMines(board) {
@@ -47,8 +45,6 @@ function setMinesNegsCount(board) {
             if (!currCell.isMine) {
                 const minesAroundCount = countNeighborAround(board, i, j)
                 currCell.minesAroundCount = minesAroundCount
-
-                // renderNegCount(i, j)                         // render DOM
             }
         }
     }
@@ -115,8 +111,6 @@ function placeMinesManualy(board, i, j) {
 
     gGame.manualMinesCount--
     console.log('gGame.manualMinesCount:', gGame.manualMinesCount)
-
-    // gGameMoves.push(copyBoard(gBoard))
 }
 
 function hideMinesManualy(i, j) {

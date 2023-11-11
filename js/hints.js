@@ -29,11 +29,9 @@ function useHints(i, j) {
 
     if (!gGame.isOn || !currCell || currCell.isShown || gGame.isFirstClick) return
 
-    // revealNeg(gBoard, i, j)
     revealCellAndNeighbors(i, j)
 
     setTimeout(() => {
-        // console.log("Removing hint:", gBonus.hintsNum)
         removeHint(gBonus.hintsNum)
         hideRevealedCells(i, j)
     }, 1000)
@@ -71,7 +69,6 @@ function hideRevealedCells(rowIdx, colIdx) {
     const elCell = document.querySelector(`.cell-${rowIdx}-${colIdx}`)
     elCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
     elCell.innerHTML = ''
-    // console.log('hide clicked cell:', gGame.shownCellsCount)
     
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= gBoard.length) continue
@@ -83,12 +80,10 @@ function hideRevealedCells(rowIdx, colIdx) {
             if (!currCell.isShown || elNeighborCell.classList.contains('hint-revealed')) {
                 elNeighborCell.classList.remove('hint-revealed', 'marked-mine', 'marked-not-mine')
                 elNeighborCell.innerHTML = ''
-                // console.log(`hide ${i}-${j}`, gGame.shownCellsCount)
             }
         }
     }
     gBoard[rowIdx][colIdx].isShown = false
-    // console.log('final gGame.shownCellsCount', gGame.shownCellsCount)
 }
 
 function removeHint(i) {
@@ -109,11 +104,9 @@ function changeMegaHintLook() {
 
     if (elMegaHintBtn.classList.contains('mega-hint-used')) {
         elMegaHintBtn.classList.remove('mega-hint-used')
-        // gBonus.megaCoorCount = 0
         gBonus.useMegaHint = false
     } else {
         elMegaHintBtn.classList.add('mega-hint-used')
-        // gBonus.megaCoorCount++
         gBonus.useMegaHint = true
     }
 }
