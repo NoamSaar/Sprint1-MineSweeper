@@ -20,13 +20,14 @@ body {
 }
 
 .container {
-    display: flex;
-    padding: 50px;
+    /* display: flex; */
+    /* padding: 50px; */
+    margin: 20px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgb(227, 218, 218);
-    min-width: 500px;
+    background-color: rgba(211, 211, 211, 0.702);
+    min-width: 800px;
     min-height: 650px;
     border-radius: 12px;
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
@@ -40,20 +41,25 @@ h2 {
     font-size: 2em;
 }
 
+.board-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+}
+
 table {
-    margin: 20px auto;
+    margin: 0 auto;
 }
 
 tfoot td {
     padding: 10px;
-}
-
-.cell {
-    width: 45px;
-    height: 45px;
-    background-color: lightgray;
-    cursor: pointer;
-    border-style: inset;
 }
 
 .modal {
@@ -69,80 +75,23 @@ tfoot td {
     background-color: #948f8fbe;
 }
 
+.cell {
+    width: 45px;
+    height: 45px;
+    background-color: lightgray;
+    cursor: pointer;
+    border-style: inset;
+}
+
 button {
     padding: 5px;
     margin: 10px;
     cursor: pointer;
-    /* border-radius: 10px; */
 }
 
-.button-bg {
-    align-items: center;
-    appearance: none;
-    background-color: #fff;
-    border-radius: 24px;
-    border-style: none;
-    box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px, rgba(0, 0, 0, .14) 0 6px 10px 0, rgba(0, 0, 0, .12) 0 1px 18px 0;
-    box-sizing: border-box;
-    color: #3c4043;
-    cursor: pointer;
-    display: inline-flex;
-    fill: currentcolor;
-    font-family: "Google Sans", Roboto, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    height: 60px;
-    justify-content: center;
-    letter-spacing: .25px;
-    line-height: normal;
-    max-width: 100%;
-    overflow: visible;
-    padding: 4px 25px;
-    position: relative;
-    text-align: center;
-    text-transform: none;
-    transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1), opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    width: auto;
-    will-change: transform, opacity;
-    z-index: 0;
-}
-
-.button-bg:hover {
-    background: #F6F9FE;
-    color: #636467;
-}
-
-.button-bg:active {
-    box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%), 0 8px 12px 6px rgb(60 64 67 / 15%);
-    outline: none;
-}
-
-.button-bg:focus {
-    outline: none;
-    border: 2px solid #6b6f76;
-}
-
-.button-bg:not(:disabled) {
-    box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
-}
-
-.button-bg:not(:disabled):hover {
-    box-shadow: rgba(60, 64, 67, .3) 0 2px 3px 0, rgba(60, 64, 67, .15) 0 6px 10px 4px;
-}
-
-.button-bg:not(:disabled):focus {
-    box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
-}
-
-.button-bg:not(:disabled):active {
-    box-shadow: rgba(60, 64, 67, .3) 0 4px 4px 0, rgba(60, 64, 67, .15) 0 8px 12px 6px;
-}
-
-.button-bg:disabled {
-    box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+.op-btn {
+    padding: 15px;
+    margin: 25px;
 }
 
 .difficulty-container {
@@ -153,9 +102,40 @@ button {
     font-size: 1.5em;
 }
 
-.smiley {
+.smiley-btn{
     text-shadow: 0 0 20px rgba(60, 64, 67, .3);
-    color: black
+}
+
+.safe-btn {
+    position: relative;
+}
+
+.safe-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.4em;
+}
+
+.smiley-btn:hover {
+    text-shadow: 0 0 20px rgb(60, 64, 67);
+}
+
+.safe-btn:hover{
+    text-shadow: 0 0 20px rgba(60, 64, 67, 0.544);
+}
+
+.mega-hint:hover{
+    text-shadow: 0 0 20px rgba(60, 64, 67, 0.544);
+}
+
+.mine-ex-btn:hover{
+    text-shadow: 0 0 20px rgba(60, 64, 67, 0.544);
+}
+
+.hint-btn:hover{
+    text-shadow: 0 0 20px rgba(60, 64, 67, 0.544);
 }
 
 .no-bg {
@@ -201,9 +181,7 @@ button {
     text-shadow: 0 0 20px rgb(0, 115, 255);
 }
 
-.safe-count {
-    font-size: 0.5em;
-}
+
 
 .manual-mode {
     text-shadow: 0 0 20px rgb(255, 0, 0);
@@ -215,7 +193,6 @@ button {
     display: none;
 }
 
-/* dark mode */
 .dark-mode {
     background: repeating-linear-gradient(45deg,
             #2f2d2d,
@@ -235,5 +212,4 @@ button {
 .dark-mode-container {
     background-color: #333;
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-
 }

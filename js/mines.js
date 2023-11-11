@@ -106,7 +106,7 @@ function placeMinesManualy(board, i, j) {
     gGame.manualMinesCount--
     console.log('gGame.manualMinesCount:', gGame.manualMinesCount)
 
-    gGameMoves.push(copyBoard(gBoard))
+    // gGameMoves.push(copyBoard(gBoard))
 }
 
 function hideMinesManualy(i, j) {

@@ -4,8 +4,8 @@ const HINTS = '🔦'
 
 function generateHints(count) {
     for (var i = 0; i < count; i++) {
-        const elHints = document.querySelector(`.hint${i + 1}`)
-        elHints.innerHTML = HINTS
+        const elHintsBtn = document.querySelector(`.hint${i + 1}`)
+        elHintsBtn.innerHTML = HINTS
     }
 }
 

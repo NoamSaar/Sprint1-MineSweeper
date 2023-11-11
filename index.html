@@ -13,54 +13,92 @@
   <h3>BEST SCORE: <span class="best-score"></span></h3>
   <div class="container">
     <div>
-      <button class="dark-mode-btn dark-mode" title="Display Mode" onclick="displayDarkMode()">Dark Mode</button>
-      <button class="manual-mode-btn" onclick="toggleManualMode()">Manual Mode</button>
-      <button class="undo-btn" onclick="undoLastMove()">UNDO</button>
+      <button class="manual-mode-btn op-btn" title="Manual Mode" 
+              onclick="toggleManualMode()">Manual
+      </button>
+
+      <button class="dark-mode-btn dark-mode op-btn" title="Display Mode" 
+              onclick="displayDarkMode()">Dark Mode
+      </button>
+
+      <button class="undo-btn op-btn" title="Undo Button"
+              onclick="undoLastMove()">UNDO
+      </button>
 
     </div>
-
+    
     <div class="score-container">
       <h3><span>Score: <span class="score">0</span></span></h3>
     </div>
 
-    <span>
-      <button class="safe-btn no-bg" title="safe-click" onclick="safeClick()"><span 
-        class="safe-click">🛟</span><span class="safe-count">3</span></button>
-      <button class="mega-hint no-bg" title="Mega Hint" onclick="changeMegaHintLook()">🔎</button>
-      <button class="mine-ex-btn no-bg" title="Mine Exterminator" onclick="exterminateMines()">💣</button>
-    </span>
-
-    <span>
-      <button class="hint1 no-bg" title="Hint" onclick="changeHintLook(1)"></button>
-      <button class="hint2 no-bg" title="Hint" onclick="changeHintLook(2)"></button>
-      <button class="hint3 no-bg" title="Hint" onclick="changeHintLook(3)"></button>
-    </span>
-
-
     <div>
-      <button class="smiley no-bg" title="restart" onclick="onInit()"></button>
+      <button class="smiley-btn no-bg" title="restart" onclick="onInit()"></button>
     </div>
-    <div class="timer button-bg">00:00</div>
+    <div class="timer">00:00</div>
 
-    <table title="Board">
-      <tbody class="board"></tbody>
+    <div class="board-container">
+      <span class="buttons-container">
 
-      <tfoot>
-        <tr>
-          <td colspan="4">© Noam Saar</td>
-        </tr>
-      </tfoot>
+        <button class="safe-btn no-bg" title="Safe Click" 
+                onclick="safeClick()">
+                <span class="safe-click">🛟</span>
+                <span class="safe-count">3</span>
+        </button>
 
-    </table>
+        <button class="mega-hint no-bg" title="Mega Hint" 
+                onclick="changeMegaHintLook()">🔎
+        </button>
+
+        <button class="mine-ex-btn no-bg" title="Mine Exterminator" 
+                onclick="exterminateMines()">💣
+        </button>
+      </span>
+
+      <table title="Board">
+
+        <tbody class="board"></tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="4">© Noam Saar</td>
+          </tr>
+        </tfoot>
+
+      </table>
+
+      <span class="buttons-container">
+
+        <button class="hint-btn hint1 no-bg" title="Hint" 
+                onclick="changeHintLook(1)">
+        </button>
+
+        <button class="hint-btn hint2 no-bg" title="Hint" 
+                onclick="changeHintLook(2)">
+        </button>
+
+        <button class="hint-btn hint3 no-bg" title="Hint" 
+                onclick="changeHintLook(3)">
+        </button>
+
+      </span>
+    </div>
+
     <div class="lives lives-count no-bg"></div>
+
     <div class="difficulty-container">
-      <button class="levels button-bg" onclick="changeLevel(4, 2)">Beginner</button>
-      <button class="levels button-bg" onclick="changeLevel(8, 14)">Pro</button>
-      <button class="levels button-bg" onclick="changeLevel(12, 32)">Exprert</button>
+      <button class="levels op-btn" title="Beginner Level"
+              onclick="changeLevel(4, 2)">Beginner
+      </button>
+      
+      <button class="levels op-btn" title="Pro Level"
+              onclick="changeLevel(8, 14)">Pro
+      </button>
+
+      <button class="levels op-btn" title="Exprert Level"
+              onclick="changeLevel(12, 32)">Exprert
+      </button>
     </div>
-
   </div>
-
 
   <div class="modal">
     <h2></h2>

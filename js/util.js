@@ -1,6 +1,6 @@
 'use strict'
 
-// // Prevent the context menu from appearing
+// Prevent the context menu from appearing
 window.addEventListener('contextmenu', function (e) {
     e.preventDefault() 
 })
@@ -60,7 +60,6 @@ function getRandomEmptyCell(board) {
     const randIdx = getRandomInt(0, emptyCells.length)
     return emptyCells[randIdx]
 }
-
 
 function renderCell(location, value, bollean, className) {
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)

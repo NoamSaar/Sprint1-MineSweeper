@@ -63,12 +63,9 @@ function onInit() {
     clearhints()
     updateBestScore()
 
-    toggleDisabledBtn('mega-hint', 'no-left', 'remove', true)
-    toggleDisabledBtn('safe-btn', 'no-left', 'remove', true)
-    toggleDisabledBtn('mine-ex-btn', 'no-left', 'remove', true)
+    toggleAllBtns(true)
 
     gGameMoves = []
-    // gGameMoves.push(copyGameBoard(gBoard))
 
     const storedDarkMode = localStorage.getItem('darkMode')
     if (storedDarkMode !== null) {
@@ -106,10 +103,10 @@ function onInit() {
     gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE)               // Model
     renderBoard(gBoard)                                         // DOM
 
-    setMinesNegsCount(gBoard)
+    // setMinesNegsCount(gBoard)
+
 }
 
-// create boards
 function buildBoard(rows, cols) {
     const board = []
     for (var i = 0; i < rows; i++) {
@@ -127,7 +124,6 @@ function buildBoard(rows, cols) {
     return board
 }
 
-// render board with the mines inside
 function renderBoard(board) {
     var strHTML = ''
     const elBoard = document.querySelector('.board')
@@ -147,7 +143,7 @@ function renderBoard(board) {
             strHTML += `\t<td class="cell ${cellClass}" title="${title}" 
             data-i="${i}" data-j="${j}"
             onclick="onCellClicked(this, ${i}, ${j})"
-            oncontextmenu="onCellMarked(this, ${i}, ${j})">`
+            oncontextmenu="onMarkCell(this, ${i}, ${j})">`
 
             // if (currCell.isMine) strHTML += MINE
 
@@ -164,9 +160,9 @@ function handleFirstClick(i, j) {
     setMinesNegsCount(gBoard)
     renderAfterMines(gBoard)
     gGameMoves.push(copyBoard(gBoard))
+    console.log('gGameMoves:', gGameMoves)
 }
 
-// cell click event
 function onCellClicked(elCell, i, j) {
 
     const currCell = gBoard[i][j]
@@ -208,19 +204,22 @@ function onCellClicked(elCell, i, j) {
         updateScore(gGame.score)
         return
     }
-    // gGameMoves.push(copyBoard(gBoard))
 
     if (gGame.isManualMode) {
+        
         if (gGame.manualMinesCount > 0) {
             placeMinesManualy(gBoard, i, j)
             setTimeout(() => {
                 hideMinesManualy(i, j)
             }, 1000)
+            gGameMoves.push(copyBoard(gBoard))
+            console.log('gBoard:', gBoard)
         }
 
         if (gGame.manualMinesCount === 0) {
             setTimeout(() => {
                 removeAllMarkedManualMines()
+                toggleAllBtns(false)
             }, 2000)
             toggleManualMode()
             setMinesNegsCount(gBoard)
@@ -234,10 +233,8 @@ function onCellClicked(elCell, i, j) {
         // console.log('gGame.isManualMode:', gGame.isManualMode)
         gGame.isFirstClick = false
 
-        toggleDisabledBtn('mega-hint', 'no-left', 'remove', false)
-        toggleDisabledBtn('safe-btn', 'no-left', 'remove', false)
-        toggleDisabledBtn('mine-ex-btn', 'no-left', 'remove', false)
-    
+        toggleAllBtns(false)
+
         handleFirstClick(i, j)
         startTimer()
     }
@@ -345,8 +342,7 @@ function expandShown(board, elCell, rowIdx, colIdx) {
     renderNegCount(rowIdx, colIdx)
 }
 
-// mark cell with FLAG if thinks it is a mine
-function onCellMarked(elCell, i, j) {
+function onMarkCell(elCell, i, j) {
     const currCell = gBoard[i][j]
 
 
@@ -376,15 +372,13 @@ function onCellMarked(elCell, i, j) {
 }
 
 function undoLastMove() {
-    console.log('hi')
-    console.log('gBoard before pop:', gBoard)
+    console.log('undo clicked')
+    console.log('gGameMoves:', gGameMoves)
+    if (!gGame.isOn) return
+
     if (gGameMoves.length > 0) {
-        var prevState = gGameMoves.pop()
-        console.log('prevState:', prevState)
-
-        gBoard = prevState
-        console.log('gBoard after pop:', gBoard)
-
+        gBoard = copyBoard(gGameMoves.pop())
+        console.log('gBoard:', gBoard)
         renderAfterMines(gBoard)
     }
 }
@@ -514,7 +508,7 @@ function changeLivesCount(count) {
 }
 
 function changeSmiley(EMOJI) {
-    const elSmiley = document.querySelector('.smiley')
+    const elSmiley = document.querySelector('.smiley-btn')
     elSmiley.innerHTML = EMOJI
 }
 
@@ -548,7 +542,16 @@ function displayDarkMode() {
     })
 }
 
-function toggleDisabledBtn(btnClassName, designClass, action, isShown) {
+function toggleAllBtns(boolean) {
+    toggleBtn('mega-hint', 'no-left', 'remove', boolean)
+    toggleBtn('safe-btn', 'no-left', 'remove', boolean)
+    toggleBtn('mine-ex-btn', 'no-left', 'remove', boolean)
+    toggleDisabledBtn('hint', boolean)
+    toggleDisabledBtn('smiley-btn', boolean)
+    toggleDisabledBtn('undo-btn', boolean)
+}
+
+function toggleBtn(btnClassName, designClass, action, isShown) {
     const elBtn = document.querySelector(`.${btnClassName}`)
     if (action === 'add') {
         elBtn.classList.add(designClass)
@@ -556,4 +559,16 @@ function toggleDisabledBtn(btnClassName, designClass, action, isShown) {
         elBtn.classList.remove(designClass)
     }
     elBtn.disabled = isShown
+}
+
+function toggleDisabledBtn(btnClassName, isShown) {
+    if (btnClassName === 'hint') {
+        for (var i = 0; i < gBonus.hintsCount; i++) {
+            const elHintsBtn = document.querySelector(`.hint${i + 1}`)
+            elHintsBtn.disabled = isShown
+        }
+    } else {
+        const elBtn = document.querySelector(`.${btnClassName}`)
+        elBtn.disabled = isShown
+    }
 }
