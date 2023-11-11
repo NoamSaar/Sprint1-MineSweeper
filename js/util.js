@@ -61,6 +61,10 @@ function getRandomEmptyCell(board) {
     return emptyCells[randIdx]
 }
 
+function getCellElement(rowIdx, colIdx) {
+    return document.querySelector(`.cell-${rowIdx}-${colIdx}`)
+}
+
 function renderCell(location, value, bollean, className) {
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
     if (!value) value = ''

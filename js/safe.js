@@ -1,13 +1,13 @@
 'use strict'
 
 function safeClick() {
-    if (gGame.isFirstClick || !gBonus.safeCount) return
+    if (gGame.isFirstClick || !gBonus.totalSafeCount) return
     changeSafeLook()
     revealSafeCell(gBoard)
 
-    gBonus.safeCount--
-    if (gBonus.safeCount === 0) {
-        gBonus.safeCount = null
+    gBonus.totalSafeCount--
+    if (gBonus.totalSafeCount === 0) {
+        gBonus.totalSafeCount = null
 
         setTimeout(() => {
             const elSafeBtn = document.querySelector('.safe-btn')
@@ -16,8 +16,8 @@ function safeClick() {
         }, 1500)
     }
 
-    const elSafeCount = document.querySelector('.safe-count')
-    elSafeCount.innerHTML = gBonus.safeCount
+    const elTotalSafeCount = document.querySelector('.safe-count')
+    elTotalSafeCount.innerHTML = gBonus.totalSafeCount
 }
 
 function revealSafeCell(board) {

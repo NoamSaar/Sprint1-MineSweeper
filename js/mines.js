@@ -40,7 +40,6 @@ function renderAfterMines(board) {
 
 }
 
-// store mines count in the model
 function setMinesNegsCount(board) {
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
@@ -55,7 +54,6 @@ function setMinesNegsCount(board) {
     }
 }
 
-// render neg count and display in DOM (show number of neg mines on each clicked cell)
 function renderNegCount(i, j) {
     const elCell = document.querySelector(`.cell-${i}-${j}`)
     const negMinesCount = gBoard[i][j].minesAroundCount
@@ -63,8 +61,7 @@ function renderNegCount(i, j) {
     elCell.innerHTML = negMinesCount
 }
 
-// checks if a cell is clear from neg mines -- used in onCellClicked
-function clearFromNegMines(board, rowIdx, colIdx) {
+function IsclearFromNegMines(board, rowIdx, colIdx) {
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= board.length) continue
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
@@ -76,6 +73,19 @@ function clearFromNegMines(board, rowIdx, colIdx) {
         }
     }
     return true
+}
+
+function displayAllMines(board) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[i].length; j++) {
+            const currCell = board[i][j]
+            if (currCell.isMine) {
+                const elCell = document.querySelector(`.cell-${i}-${j}`)
+                elCell.classList.add('marked-mine')         // DOM
+                elCell.innerHTML = MINE
+            }
+        }
+    }
 }
 
 function toggleManualMode() {
